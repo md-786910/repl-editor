@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import ToastMessage from "./components/ToastMessage";
 import api from "./api";
-import { wsApi } from "./config";
+import { API, wsApi } from "./config";
 
 const STARTER_TEMPLATES = [
   { key: "react-starter", label: "React (Vite)" },
@@ -98,13 +98,13 @@ export default function App() {
 
   function openViteApp() {
     if (containerInfo && containerInfo.vitePort) {
-      window.open(`http://localhost:${containerInfo.vitePort}`, "_blank");
+      window.open(`${API}:${containerInfo.vitePort}`, "_blank");
     }
   }
 
   function openVSCode() {
     if (containerInfo && containerInfo.codeServerPort) {
-      window.open(`http://localhost:${containerInfo.codeServerPort}`, "_blank");
+      window.open(`${API}:${containerInfo.codeServerPort}`, "_blank");
     }
   }
 
@@ -312,7 +312,7 @@ export default function App() {
                                 onClick={() => {
                                   if (containerInfo && containerInfo.nodePort) {
                                     window.open(
-                                      `http://localhost:${containerInfo.nodePort}`,
+                                      `${API}:${containerInfo.nodePort}`,
                                       "_blank"
                                     );
                                   }
@@ -337,7 +337,7 @@ export default function App() {
                                 onClick={() => {
                                   if (containerInfo && containerInfo.htmlPort) {
                                     window.open(
-                                      `http://localhost:${containerInfo.htmlPort}`,
+                                      `${API}:${containerInfo.htmlPort}`,
                                       "_blank"
                                     );
                                   }
