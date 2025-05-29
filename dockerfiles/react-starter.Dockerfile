@@ -16,7 +16,6 @@ RUN npm install -g create-vite
 # Create Vite React app if not exists
 RUN [ ! -f "package.json" ] && npm init vite@latest . -- --template react || true
 
-RUN npm install
 
 EXPOSE 5173 8080
 
