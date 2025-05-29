@@ -13,7 +13,7 @@ WORKDIR /workspace
 
 RUN npm install -D nodemon
 
-EXPOSE 3001 8080
+EXPOSE 3011 8080
 
 CMD ["dumb-init", "bash", "-c", "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace"]
 

@@ -44,8 +44,11 @@ async function createUserContainer(userId, template) {
     // const hostPort = 5173 + Math.floor(Math.random() * 1000);
 
     // Pick random host port for app
-    const appPort = templateConf.port + Math.floor(Math.random() * 1000);
-    const codeServerPort = 8000 + Math.floor(Math.random() * 1000);
+    // const appPort = templateConf.port + Math.floor(Math.random() * 1000);
+    // const codeServerPort = 8000 + Math.floor(Math.random() * 1000);
+
+    const appPort = templateConf.port;
+    const codeServerPort = 8000;
     const workspacePath = getWorkspacePath(userId, template);
 
     const container = await docker.createContainer({
@@ -81,7 +84,7 @@ async function createUserContainer(userId, template) {
     if (containers?.length > 6) {
       // rmeove all container
       const removed = [];
-      await removeAllContainer(removed)
+      await removeAllContainer(removed);
     }
 
     return {

@@ -10,6 +10,6 @@ WORKDIR /workspace
 
 RUN npm install serve
 
-EXPOSE 8000 8080
+EXPOSE 5500 8080
 
 CMD ["dumb-init", "bash", "-c", "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace "]
