@@ -12,7 +12,6 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 # Place them in /starter, then copy to /workspace as node
 COPY --chown=node:node ../starter_templates/node-starter/* /workspace/
 
-# RUN mkdir -p /workspace
 WORKDIR /workspace
 
 RUN npm install -D nodemon

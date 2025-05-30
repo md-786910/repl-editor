@@ -16,7 +16,7 @@ exports.TEMPLATE_IMAGES = {
     image: "html-starter", // your html server image (e.g. nginx or serve)
     port: 5500,
     key: "htmlPort",
-    command: "npm install serve && npx serve -l 5500",
+    command: "npm install && npm install -D serve && npx serve -l 5500",
   },
 };
 

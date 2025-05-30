@@ -31,7 +31,7 @@ function getWorkspacePath(userId, template) {
       });
     }
 
-    execSync(`chown -R 1000:1000 "${userDir}"`);
+    // execSync(`chown -R 1000:1000 "${userDir}"`);
 
     return userDir;
   } catch (error) {
