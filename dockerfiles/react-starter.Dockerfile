@@ -24,4 +24,7 @@ RUN [ ! -f "package.json" ] && npm init vite@latest . -- --template react || tru
 
 EXPOSE 5173 8080
 
+# 👇 Add this line to run container as 'node' (UID 1000)
+USER node
+
 CMD ["dumb-init", "bash", "-c", "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace "]

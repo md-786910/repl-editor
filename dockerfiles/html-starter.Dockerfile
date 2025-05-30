@@ -15,4 +15,7 @@ RUN npm install -D serve
 
 EXPOSE 5500 8080
 
+# 👇 Add this line to run container as 'node' (UID 1000)
+USER node
+
 CMD ["dumb-init", "bash", "-c", "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace "]

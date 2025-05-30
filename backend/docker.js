@@ -58,10 +58,10 @@ async function createUserContainer(userId, template) {
       name: containerName,
       Tty: true,
       User: "1000:1000",
-      RestartPolicy: {
-        Name: "always", // 👈 important part
-      },
       HostConfig: {
+        RestartPolicy: {
+          Name: "always", // 👈 important part
+        },
         Binds: [`${workspacePath}:/workspace`],
         PortBindings: {
           [`${templateConf.port}/tcp`]: [{ HostPort: appPort.toString() }],
