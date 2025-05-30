@@ -1,5 +1,16 @@
 # 📁 Project Folder Structure Overview
+This project is organized to support a scalable, containerized cloud IDE and code execution platform (like a mini-Replit).  
+Below is an explanation of the top-level folders and important scripts:
 
+├── backend/ # Node.js backend (API, container management, logic)
+├── dockerfiles/ # Dockerfiles for each starter template/environment
+├── frontend/ # React-based dashboard and UI
+├── starter_templates/ # Prebuilt starter templates (React, Node, HTML/CSS/JS)
+├── user_workspaces/ # Per-user workspace directories (mapped into containers)
+├── .gitignore # Git ignore rules
+├── build_docker_starter.sh # Shell script to build starter Docker images
+├── run_app.sh # Shell script to run the app locally (if provided)
+└── readme.md # Project documentation
 
 
 
