@@ -1,4 +1,5 @@
 const docker = require("./init/docker");
+
 const WebSocket = require("ws");
 function attachToContainerShell(server, userContainers) {
   const wss = new WebSocket.Server({ server, path: "/ws/terminal" });
@@ -54,7 +55,10 @@ function attachLogsWS(server, userContainers) {
         stderr: true,
         since: 0,
       });
-      logStream.on("data", (chunk) => ws.send(chunk.toString()));
+      logStream.on("data", (chunk) => {
+        const logLine = chunk.toString();
+        ws.send(logLine);
+      });
       ws.on("close", () => {
         logStream.destroy();
       });

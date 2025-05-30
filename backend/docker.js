@@ -9,6 +9,7 @@ const { eventObj } = require("./constant/event");
 const userContainers = {};
 const uid = process.getuid ? process.getuid() : 1000;
 const gid = process.getgid ? process.getgid() : 1000;
+const { execSync } = require("child_process");
 
 function getWorkspacePath(userId, template) {
   try {
@@ -29,6 +30,9 @@ function getWorkspacePath(userId, template) {
         errorOnExist: false,
       });
     }
+
+    execSync(`chown -R 1000:1000 "${userDir}"`);
+
     return userDir;
   } catch (error) {
     throw new Error(error);
@@ -41,16 +45,12 @@ async function createUserContainer(userId, template) {
     const templateConf =
       TEMPLATE_IMAGES[template] || TEMPLATE_IMAGES["react-starter"];
     const terminalCommand = TEMPLATE_IMAGES[template]?.command;
-    // const containerName = `user-${userId}-${uuidv4().slice(0, 8)}`;
     const containerName = `user-${userId}-${template}-${uuidv4().slice(0, 8)}`;
-    // const hostPort = 5173 + Math.floor(Math.random() * 1000);
 
     // Pick random host port for app
     const appPort = templateConf.port + Math.floor(Math.random() * 1000);
     const codeServerPort = 8000 + Math.floor(Math.random() * 1000);
 
-    // const appPort = templateConf.port;
-    // const codeServerPort = 8000;
     const workspacePath = getWorkspacePath(userId, template);
 
     const container = await docker.createContainer({

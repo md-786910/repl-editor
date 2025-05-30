@@ -1,0 +1,10 @@
+{
+  "name": "node-started",
+  "version": "1.0.0",
+  "description": "node-starter",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^5.1.0"
+  }
+}

@@ -13,6 +13,7 @@ import {
 import ToastMessage from "./components/ToastMessage";
 import api from "./api";
 import { API, wsApi } from "./config";
+import stripAnsi from 'strip-ansi'
 
 const STARTER_TEMPLATES = [
   { key: "react-starter", label: "React (Vite)" },
@@ -162,7 +163,7 @@ export default function App() {
         if (wsRef.current) wsRef.current.close();
         const ws = new WebSocket(`ws://${wsApi}/ws/logs?userId=${userId}`);
         wsRef.current = ws;
-        ws.onmessage = (e) => setLogs((logs) => logs + e.data);
+        ws.onmessage = (e) => setLogs((logs) => stripAnsi(logs + e.data));
         ws.onclose = () => {
           setToast({ show: true, message: "logs closed", variant: "waning" });
         };
@@ -175,6 +176,8 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsRef, containerInfo]);
 
+
+  
   return (
     <Container
       fluid

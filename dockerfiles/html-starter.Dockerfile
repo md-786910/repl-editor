@@ -11,7 +11,7 @@ COPY --chown=node:node ../starter_templates/html-starter/* /workspace/
 
 WORKDIR /workspace
 
-RUN npm install serve
+RUN npm install 
 
 EXPOSE 5500 8080
 
