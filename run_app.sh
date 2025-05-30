@@ -6,6 +6,8 @@ ROOT_DIR="$(pwd)"
 BACKEND_DIR="$ROOT_DIR/backend"
 FRONTEND_DIR="$ROOT_DIR/frontend"
 
+"$NPM_BIN" install -g pm2 
+
 # Define binaries
 NODE_BIN="$(which node)"
 NPM_BIN="$(which npm)"
