@@ -72,10 +72,23 @@ async function createUserContainer(userId, template) {
       Cmd: [
         "/bin/bash",
         "-c",
-        "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace & " +
+        // 1. Fix permissions
+        "chown -R node:node /workspace && " +
+          // 2. Start code-server in background
+          "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace & " +
+          // 3. Then your terminal command in background
           `${terminalCommand} & ` +
+          // 4. Wait on both
           "wait",
       ],
+
+      // Cmd: [
+      //   "/bin/bash",
+      //   "-c",
+      //   "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace & " +
+      //     `${terminalCommand} & ` +
+      //     "wait",
+      // ],
     });
     await container.start();
     dockerEvents.emit(eventObj.CLEANUP_CONTAINER_MAX_6, {});
