@@ -8,12 +8,16 @@ RUN curl -Lo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-RUN mkdir -p /workspace
+# Add your starter files (for example, from build context)
+# Place them in /starter, then copy to /workspace as node
+COPY --chown=node:node ../starter_templates/node-starter/* /workspace/
+
+# RUN mkdir -p /workspace
 WORKDIR /workspace
 
 RUN npm install -D nodemon
 
-EXPOSE 3011 8080
+EXPOSE 5100 8080
 
 CMD ["dumb-init", "bash", "-c", "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace"]
 

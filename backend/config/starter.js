@@ -7,8 +7,8 @@ exports.TEMPLATE_IMAGES = {
     command: "npm install && npm run dev",
   },
   "node-starter": {
-    image: "express-starter", // your node starter image
-    port: 3011,
+    image: "node-starter", // your node starter image
+    port: 5100,
     key: "nodePort",
     command: "npm install && npm install -D nodemon && npm run dev",
   },

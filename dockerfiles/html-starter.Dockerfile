@@ -5,7 +5,10 @@ RUN apt-get update && apt-get install -y curl dumb-init
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-RUN mkdir -p /workspace
+# Add your starter files (for example, from build context)
+# Place them in /starter, then copy to /workspace as node
+COPY --chown=node:node ../starter_templates/html-starter/* /workspace/
+
 WORKDIR /workspace
 
 RUN npm install serve

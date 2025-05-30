@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-docker build -t react-starter -f dockerfiles/react-starter.Dockerfile .
-docker build -t node-starter -f dockerfiles/node-starter.Dockerfile .
-docker build -t html-starter -f dockerfiles/html-starter.Dockerfile .
+docker build --no-cache -t react-starter:latest -f dockerfiles/react-starter.Dockerfile .
+docker build  --no-cache -t node-starter:latest -f dockerfiles/node-starter.Dockerfile .
+docker build --no-cache -t html-starter:latest -f dockerfiles/html-starter.Dockerfile .

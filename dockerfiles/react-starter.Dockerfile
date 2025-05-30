@@ -5,8 +5,13 @@ RUN apt-get update && apt-get install -y curl dumb-init
 # Install code-server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
+
+# Add your starter files (for example, from build context)
+# Place them in /starter, then copy to /workspace as node
+COPY --chown=node:node ../starter_templates/react-starter/* /workspace/
+
 # Setup workspace
-RUN mkdir -p /workspace
+# RUN mkdir -p /workspace
 WORKDIR /workspace
 
 

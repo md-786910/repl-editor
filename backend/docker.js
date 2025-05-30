@@ -4,31 +4,35 @@ const fse = require("fs-extra"); // install with npm install fs-extra
 const fs = require("fs");
 const { TEMPLATE_IMAGES } = require("./config/starter");
 const docker = require("./init/docker");
-
-const BASE_IMAGE = "react-starter";
+const dockerEvents = require("./event/eventEmitter");
+const { eventObj } = require("./constant/event");
 const userContainers = {};
 const uid = process.getuid ? process.getuid() : 1000;
 const gid = process.getgid ? process.getgid() : 1000;
 
 function getWorkspacePath(userId, template) {
-  const workspaceRoot = path.join(__dirname, "..", "user_workspaces");
-  const userDir = path.join(workspaceRoot, `user-${userId}`);
-  if (!fs.existsSync(userDir)) {
-    fs.mkdirSync(userDir, { recursive: true });
+  try {
+    const workspaceRoot = path.join(__dirname, "..", "user_workspaces");
+    const userDir = path.join(workspaceRoot, `user-${userId}`);
+    if (!fs.existsSync(userDir)) {
+      fs.mkdirSync(userDir, { recursive: true });
+    }
+    if (fs.readdirSync(userDir).length === 0) {
+      const starterTemplate = path.join(
+        __dirname,
+        "..",
+        "starter_templates",
+        template
+      );
+      fse.copySync(starterTemplate, userDir, {
+        overwrite: true,
+        errorOnExist: false,
+      });
+    }
+    return userDir;
+  } catch (error) {
+    throw new Error(error);
   }
-  if (fs.readdirSync(userDir).length === 0) {
-    const starterTemplate = path.join(
-      __dirname,
-      "..",
-      "starter_templates",
-      template
-    );
-    fse.copySync(starterTemplate, userDir, {
-      overwrite: false,
-      errorOnExist: false,
-    });
-  }
-  return userDir;
 }
 
 // In createUserContainer(userId, template):
@@ -36,26 +40,27 @@ async function createUserContainer(userId, template) {
   try {
     const templateConf =
       TEMPLATE_IMAGES[template] || TEMPLATE_IMAGES["react-starter"];
-
     const terminalCommand = TEMPLATE_IMAGES[template]?.command;
-
     // const containerName = `user-${userId}-${uuidv4().slice(0, 8)}`;
     const containerName = `user-${userId}-${template}-${uuidv4().slice(0, 8)}`;
     // const hostPort = 5173 + Math.floor(Math.random() * 1000);
 
     // Pick random host port for app
-    // const appPort = templateConf.port + Math.floor(Math.random() * 1000);
-    // const codeServerPort = 8000 + Math.floor(Math.random() * 1000);
+    const appPort = templateConf.port + Math.floor(Math.random() * 1000);
+    const codeServerPort = 8000 + Math.floor(Math.random() * 1000);
 
-    const appPort = templateConf.port;
-    const codeServerPort = 8000;
+    // const appPort = templateConf.port;
+    // const codeServerPort = 8000;
     const workspacePath = getWorkspacePath(userId, template);
 
     const container = await docker.createContainer({
-      Image: BASE_IMAGE,
+      Image: `${templateConf.image}:latest`,
       name: containerName,
       Tty: true,
-      User: `${uid}:${gid}`,
+      User: "1000:1000",
+      RestartPolicy: {
+        Name: "always", // 👈 important part
+      },
       HostConfig: {
         Binds: [`${workspacePath}:/workspace`],
         PortBindings: {
@@ -71,22 +76,9 @@ async function createUserContainer(userId, template) {
           `${terminalCommand} & ` +
           "wait",
       ],
-
-      // Cmd: [
-      //   "/bin/sh",
-      //   "-c",
-      //   `code-server --auth none --bind-addr 0.0.0.0:8080 /workspace`,
-      // ],
     });
     await container.start();
-
-    const containers = await docker.listContainers({ all: true });
-    if (containers?.length > 6) {
-      // rmeove all container
-      const removed = [];
-      await removeAllContainer(removed);
-    }
-
+    dockerEvents.emit(eventObj.CLEANUP_CONTAINER_MAX_6, {});
     return {
       containerId: container.id,
       [templateConf.key]: appPort,

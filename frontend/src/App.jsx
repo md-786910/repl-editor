@@ -151,7 +151,7 @@ export default function App() {
       if (containerInfo && containerInfo?.codeServerPort) {
         openVSCode();
       }
-    }, 1200);
+    }, 2000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerInfo]);

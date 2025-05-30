@@ -25,6 +25,11 @@ app.use((req, res, next) => {
 
 const userContainers = getUserContainers();
 
+app.get('/',(req,res)=>{
+  res.send("API initialized")
+})
+
+
 app.post('/api/init', async (req, res) => {
   const { userId,template } = req.body;
   if (!userId || !template) return res.status(400).json({ error: 'Missing userId or template' });
