@@ -174,14 +174,14 @@ cd repl-editor
 ### 2. Make Scripts Executable
 
 ```bash
-chmod +x scripts/build_docker_starter.sh
-chmod +x scripts/run_app.sh
+chmod +x build_docker_starter.sh
+chmod +x run_app.sh
 ```
 
 ### 3. Build Docker Images
 
 ```bash
-./scripts/build_docker_starter.sh
+./build_docker_starter.sh
 ```
 
 ### 4. Install Dependencies
@@ -200,7 +200,7 @@ cd frontend && npm install && cd ..
 ### 5. Start the Application
 
 ```bash
-./scripts/run_app.sh
+./run_app.sh
 ```
 
 ### 6. Access the Application
