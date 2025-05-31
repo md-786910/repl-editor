@@ -13,7 +13,7 @@ import {
 import ToastMessage from "./components/ToastMessage";
 import api from "./api";
 import { API, wsApi } from "./config";
-import stripAnsi from 'strip-ansi'
+import stripAnsi from "strip-ansi";
 
 const STARTER_TEMPLATES = [
   { key: "react-starter", label: "React (Vite)" },
@@ -121,7 +121,7 @@ export default function App() {
         });
         return;
       }
-      const res = await api.post(`/api/remove-container/`, {
+      const res = await api.post(`/api/remove-container-by-id/`, {
         containerId,
         userId,
       });
@@ -135,6 +135,27 @@ export default function App() {
         setToast({
           show: true,
           message: "Container removed!",
+          variant: "success",
+        });
+      }
+    } catch (e) {
+      const msg = e?.response?.data?.message || e.message || "Error";
+      setError(msg);
+      setToast({ show: true, message: msg, variant: "danger" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function cleanUpContainer() {
+    try {
+      setLoading(true);
+      const res = await api.post(`/api/cleanup-container/`);
+      if (res.status === 200) {
+        setSuccess("Container cleaned up successfully!");
+        setToast({
+          show: true,
+          message: "Container cleaned up successfully!",
           variant: "success",
         });
       }
@@ -161,7 +182,7 @@ export default function App() {
     (() => {
       try {
         if (wsRef.current) wsRef.current.close();
-        const ws = new WebSocket(`ws://${wsApi}/ws/logs?userId=${userId}`);
+        const ws = new WebSocket(`ws://${wsApi}/api/ws/logs?userId=${userId}`);
         wsRef.current = ws;
         ws.onmessage = (e) => setLogs((logs) => stripAnsi(logs + e.data));
         ws.onclose = () => {
@@ -176,8 +197,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsRef, containerInfo]);
 
-
-  
   return (
     <Container
       fluid
@@ -224,30 +243,41 @@ export default function App() {
                   </Form.Group>
                 </Form>
               </div>
-              <div className="d-flex gap-2 mb-3">
-                <Button
-                  variant="primary"
-                  onClick={spinUp}
-                  disabled={loading}
-                  className="px-4"
-                >
-                  {loading && (
-                    <Spinner
-                      as="span"
-                      size="sm"
-                      animation="border"
-                      className="me-2"
-                    />
-                  )}
-                  {containerInfo ? "Re-Spin App" : "Spin Up App"}
-                </Button>
+              <div className="d-flex justify-content-between mb-3">
+                <div className="d-flex gap-2">
+                  <Button
+                    variant="primary"
+                    onClick={spinUp}
+                    disabled={loading}
+                    className="px-4"
+                  >
+                    {loading && (
+                      <Spinner
+                        as="span"
+                        size="sm"
+                        animation="border"
+                        className="me-2"
+                      />
+                    )}
+                    {containerInfo ? "Re-Spin App" : "Spin Up App"}
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={handleRemove}
+                    disabled={loading || !containerInfo}
+                    className="px-4"
+                  >
+                    Remove container
+                  </Button>
+                </div>
+
                 <Button
                   variant="danger"
-                  onClick={handleRemove}
+                  onClick={cleanUpContainer}
                   disabled={loading || !containerInfo}
                   className="px-4"
                 >
-                  Remove container
+                  cleanup container
                 </Button>
               </div>
               {error && (
