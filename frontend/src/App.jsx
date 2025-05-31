@@ -150,7 +150,7 @@ export default function App() {
   async function cleanUpContainer() {
     try {
       setLoading(true);
-      const res = await api.post(`/api/cleanup-container/`);
+      const res = await api.get(`/api/cleanup-container/`);
       if (res.status === 200) {
         setSuccess("Container cleaned up successfully!");
         setToast({
@@ -158,6 +158,11 @@ export default function App() {
           message: "Container cleaned up successfully!",
           variant: "success",
         });
+        clearContainerInfo(userId);
+        setContainerInfo(null);
+        setSuccess("");
+        setError("");
+        setLogs("");
       }
     } catch (e) {
       const msg = e?.response?.data?.message || e.message || "Error";
@@ -182,7 +187,7 @@ export default function App() {
     (() => {
       try {
         if (wsRef.current) wsRef.current.close();
-        const ws = new WebSocket(`ws://${wsApi}/api/ws/logs?userId=${userId}`);
+        const ws = new WebSocket(`ws://${wsApi}/ws/logs?userId=${userId}`);
         wsRef.current = ws;
         ws.onmessage = (e) => setLogs((logs) => stripAnsi(logs + e.data));
         ws.onclose = () => {
@@ -205,6 +210,14 @@ export default function App() {
       <Row className="w-100 justify-content-center mb-4">
         <Col xs={12} md={8} lg={6} xl={8}>
           <Card className="shadow-sm border-0 mt-4">
+            {loading && (
+              <Spinner
+                as="span"
+                size="md"
+                animation="border"
+                className="me-2"
+              />
+            )}
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <div>

@@ -29,9 +29,6 @@ function getWorkspacePath(userId, template) {
         errorOnExist: false,
       });
     }
-
-    // execSync(`chown -R 1000:1000 "${userDir}"`);
-
     return userDir;
   } catch (error) {
     throw new Error(error);

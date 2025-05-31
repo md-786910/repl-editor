@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", router);
 
-router.post("/api/init", async (req, res) => {
+router.post("/init", async (req, res) => {
   const { userId, template } = req.body;
   if (!userId || !template)
     return res.status(400).json({ error: "Missing userId or template" });
@@ -67,7 +67,7 @@ router.get("/cleanup-container", async (req, res) => {
   }
 });
 
-router.post("/api/remove-container-by-id", async (req, res) => {
+router.post("/remove-container-by-id", async (req, res) => {
   try {
     const { containerId, userId } = req.body;
     if (!containerId) {
@@ -83,7 +83,7 @@ router.post("/api/remove-container-by-id", async (req, res) => {
 });
 
 // Start app process in user container via Docker exec
-router.post("/api/app-start", async (req, res) => {
+router.post("/app-start", async (req, res) => {
   const { template, containerId } = req.body;
   const [cmd, args] = COMMAND[template] || COMMAND["react-starter"];
   try {
@@ -97,8 +97,6 @@ router.post("/api/app-start", async (req, res) => {
 cron.schedule("0 * * * *", async () => {
   await cleanupInactiveContainers(userContainers, 10 * 24 * 60 * 60 * 1000);
 });
-
-app.use("/static", express.static(path.join(__dirname, "..", "frontend")));
 
 const server = http.createServer(app);
 // attachToContainerShellz(server, userContainers);
