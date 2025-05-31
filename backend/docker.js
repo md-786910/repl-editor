@@ -9,7 +9,6 @@ const { eventObj } = require("./constant/event");
 const userContainers = {};
 const uid = process.getuid ? process.getuid() : 1000;
 const gid = process.getgid ? process.getgid() : 1000;
-const { execSync } = require("child_process");
 
 function getWorkspacePath(userId, template) {
   try {
@@ -57,7 +56,7 @@ async function createUserContainer(userId, template) {
       Image: `${templateConf.image}:latest`,
       name: containerName,
       Tty: true,
-      User: "1000:1000",
+      User: `${uid}:${gid}`, // 👈 important part
       HostConfig: {
         RestartPolicy: {
           Name: "always", // 👈 important part
@@ -81,14 +80,6 @@ async function createUserContainer(userId, template) {
           // 4. Wait on both
           "wait",
       ],
-
-      // Cmd: [
-      //   "/bin/bash",
-      //   "-c",
-      //   "code-server --auth none --bind-addr 0.0.0.0:8080 /workspace & " +
-      //     `${terminalCommand} & ` +
-      //     "wait",
-      // ],
     });
     await container.start();
     dockerEvents.emit(eventObj.CLEANUP_CONTAINER_MAX_6, {});
@@ -116,6 +107,23 @@ async function cleanupInactiveContainers(containers, thresholdMs) {
         await container.remove({ v: true });
         // Optionally: delete workspace folder on disk
         // fs.rmdirSync(info.workspacePath, { recursive: true });
+
+        // Optionally: Remove user workspace folder
+        // Find user folder by container name
+        const userName = container.Names[0]
+          .split("/")[1]
+          .split("-")
+          .slice(0, 3)
+          .join("-");
+        const workspacePath = path.join(
+          __dirname,
+          "..",
+          "user_workspaces",
+          userName
+        );
+        if (fs.existsSync(workspacePath)) {
+          fs.rmSync(workspacePath, { recursive: true, force: true });
+        }
         delete containers[userId];
         console.log(`Cleaned up container for user ${userId}`);
       } catch (error) {
@@ -142,7 +150,7 @@ async function removeAllContainer(removed) {
         const userName = containerInfo.Names[0]
           .split("/")[1]
           .split("-")
-          .slice(0, -1)
+          .slice(0, 3)
           .join("-");
         const workspacePath = path.join(
           __dirname,
