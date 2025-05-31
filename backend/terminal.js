@@ -38,10 +38,10 @@ function attachToContainerShell(server, userContainers) {
     }
   });
 }
-
+let status = false;
 function attachLogsWS(server, userContainers) {
   const wss = new WebSocket.Server({ server, path: "/ws/logs" });
-
+  status = true; // Set status to true when the logs WebSocket is initialized
   wss.on("connection", async (ws, req) => {
     const params = new URLSearchParams(req.url.split("?")[1]);
     const userId = params.get("userId");
@@ -57,13 +57,46 @@ function attachLogsWS(server, userContainers) {
       });
       logStream.on("data", (chunk) => {
         const logLine = chunk.toString();
-        ws.send(logLine);
+        ws.send(
+          JSON.stringify({
+            log: logLine,
+            status,
+            message: "installing dependencies...",
+          })
+        );
+        // Detect install completion
+        if (logLine.includes("__DONE__")) {
+          status = false;
+          ws.send(
+            JSON.stringify({
+              log: "setup completed",
+              status: false,
+              message: "installation done",
+            })
+          );
+        }
       });
       ws.on("close", () => {
+        ws.send(
+          JSON.stringify({
+            log: "connection destroy",
+            status: false,
+            message: "connection destroy",
+          })
+        );
         logStream.destroy();
+        status = false;
       });
     } catch {
+      ws.send(
+        JSON.stringify({
+          log: "close",
+          status: false,
+          message: "close",
+        })
+      );
       ws.close();
+      status = false;
     }
   });
 }

@@ -4,19 +4,21 @@ exports.TEMPLATE_IMAGES = {
     image: "react-starter", // your vite react image
     port: 5173,
     key: "vitePort",
-    command: "npm install && npm run dev",
+    command: "npm install && echo '__DONE__' && npm run dev",
   },
   "node-starter": {
     image: "node-starter", // your node starter image
     port: 5100,
     key: "nodePort",
-    command: "npm install && npm install -D nodemon && npm run dev",
+    command:
+      "npm install && npm install -D nodemon && echo '__DONE__' && npm run dev",
   },
   "html-starter": {
     image: "html-starter", // your html server image (e.g. nginx or serve)
     port: 5500,
     key: "htmlPort",
-    command: "npm install && npm install -D serve && npx serve -l 5500",
+    command:
+      "npm install && npm install -D serve && echo '__DONE__'&& npx serve -l 5500",
   },
 };
 

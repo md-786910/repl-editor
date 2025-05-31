@@ -49,6 +49,7 @@ export default function App() {
   const [containerInfo, setContainerInfo] = useState(() =>
     getSavedContainerInfo(userId)
   );
+  const [logLoading, setLogLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -189,7 +190,18 @@ export default function App() {
         if (wsRef.current) wsRef.current.close();
         const ws = new WebSocket(`ws://${wsApi}/ws/logs?userId=${userId}`);
         wsRef.current = ws;
-        ws.onmessage = (e) => setLogs((logs) => stripAnsi(logs + e.data));
+        ws.onmessage = (e) => {
+          e = JSON.parse(e.data);
+          if (e.status) {
+            setLogs((prevLogs) => stripAnsi(prevLogs + e.log));
+            setLogLoading(true);
+          } else {
+            setLogs((prevLogs) => stripAnsi(prevLogs + "\n" + e.log));
+            if (e.message === "installation done") {
+              setLogLoading(false);
+            }
+          }
+        };
         ws.onclose = () => {
           setToast({ show: true, message: "logs closed", variant: "waning" });
         };
@@ -400,6 +412,7 @@ export default function App() {
                       info={containerInfo}
                       logs={logs}
                       onClearLogs={() => setLogs("logs...")}
+                      logLoading={logLoading}
                     />
                   </>
                 ) : (
@@ -425,13 +438,20 @@ export default function App() {
   );
 }
 
-function TableInfo({ info, logs, onClearLogs }) {
+function TableInfo({ info, logs, onClearLogs, logLoading = true }) {
   return (
     <Card className="shadow-sm border-0 mt-3">
       <Card.Body className="p-3">
-        <button className="btn btn-sm border" onClick={() => onClearLogs()}>
-          clear logs
-        </button>
+        <Card.Header>
+          <button className="btn btn-sm border" onClick={() => onClearLogs()}>
+            clear logs
+          </button>
+          {logLoading && (
+            <span className="mx-4">
+              <Spinner size="sm" /> installing dependencies...
+            </span>
+          )}
+        </Card.Header>
         <pre
           style={{
             marginTop: 16,

@@ -2,6 +2,44 @@
 
 A scalable, containerized cloud IDE and code execution platform similar to Replit, built with modern web technologies. This platform allows users to create, manage, and execute code in isolated Docker containers with real-time collaboration features.
 
+## 📸 Project Screenshots
+
+<div align="center">
+
+### Dashboard & Container Management
+
+<table>
+  <tr>
+   <td width="50%">
+      <img src="https://i.ibb.co/QS6jRtJ/Screenshot-from-2025-05-31-17-56-29.png" alt="Container Management" width="100%" style="border-radius: 8px; border: 1px solid #e1e5e9;"/>
+      <p align="center"><strong>Container Management</strong><br/>Monitor and control running environments</p>
+    </td>
+    <td width="50%">
+      <img src="https://i.ibb.co/VYmGtL9x/Screenshot-from-2025-05-31-17-52-55.png" alt="Main Dashboard" width="100%" style="border-radius: 8px; border: 1px solid #e1e5e9;"/>
+      <p align="center"><strong>Main Dashboard</strong><br/>Overview of active containers and workspaces</p>
+    </td>
+  </tr>
+</table>
+
+### Code Editor & Development Environment
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="https://i.ibb.co/Fbkf7zd9/Screenshot-from-2025-05-31-17-57-54.png" alt="Code Editor" width="100%" style="border-radius: 8px; border: 1px solid #e1e5e9;"/>
+      <p align="center"><strong>Code Editor</strong><br/>Monaco editor with syntax highlighting</p>
+    </td>
+    <td width="50%">
+      <img src="https://i.ibb.co/bjMpwZXH/image.png" alt="Template Selection" width="100%" style="border-radius: 8px; border: 1px solid #e1e5e9;"/>
+      <p align="center"><strong>Template Selection</strong><br/>Choose from pre-configured environments</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
