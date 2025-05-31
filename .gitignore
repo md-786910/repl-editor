@@ -1,1 +1,3 @@
 user_workspaces/*
+docker-compose.yml
+nginx.conf
